@@ -1,6 +1,8 @@
 package ttdl.study.accountservice.controller;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ttdl.study.accountservice.client.StatisticService;
 import ttdl.study.accountservice.model.AccountDTO;
+import ttdl.study.accountservice.model.StatisticDTO;
 import ttdl.study.accountservice.service.AccountService;
 
 
@@ -23,11 +27,16 @@ import ttdl.study.accountservice.service.AccountService;
 public class AccountController {
 
     private final AccountService accountService;
+    private final StatisticService statisticService;
 
     // add new
     @PostMapping("/account")
     public AccountDTO addAccount(@RequestBody AccountDTO accountDTO) {
         accountService.add(accountDTO);
+        statisticService.add(
+                StatisticDTO.builder()
+                        .message("Account " + accountDTO.getUsername() + " is created at")
+                        .createdDate(LocalDateTime.now()).build());
         return accountDTO;
     }
 
